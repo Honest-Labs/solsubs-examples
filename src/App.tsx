@@ -6,7 +6,7 @@ function App() {
   return (
     <Wallet>
       <div className="w-full h-full">
-        <p className="bold font-xl text-error">
+        <p className="bold font-xl text-error text-center">
           This is an Example on Solana Devnet for testing and education purposes
         </p>
         <InfraProviderPricing />
