@@ -83,15 +83,19 @@ export const InfraProviderPricing = () => {
       token.value ===
       planAccountMap[planConfigs[0].planCode]?.tokenMint.toString()
   );
+  const [airdropLoading, setAirdropLoading] = useState(false);
   const { balance, refetch } = useTokenAccountBalance(
     "https://api.devnet.solana.com",
     wallet,
     splToken?.value ? new PublicKey(splToken?.value) : undefined
   );
 
-  if ((loading || subscriptionLoading) && wallet.connected) {
+  if (
+    ((loading || subscriptionLoading) && wallet.connected) ||
+    airdropLoading
+  ) {
     return (
-      <div className="w-full h-full m-auto mt-24">
+      <div className="w-full h-full flex m-auto mt-12 justify-center items-center">
         <div className="loading loading-spinner text-primary w-36 h-36"></div>
       </div>
     );
@@ -107,9 +111,10 @@ export const InfraProviderPricing = () => {
       plan.price.toNumber() / 10 ** (splToken?.decimals || 0);
     const nextTermDate = new Date(subscription.nextTermDate.toNumber() * 1000);
     const config = planConfigs.find((c) => c.planCode === plan.code)!;
+    const planPdaAccount = getPlanPdaAccountSync(plan.code, plan.owner);
     const subscriptionAccountAddress = getSubscriptionPdaAccountSync(
-      getPlanPdaAccountSync(plan.code, plan.owner),
-      plan.owner
+      planPdaAccount,
+      wallet.publicKey!
     ).toString();
     return (
       <div className="px-8 py-12 rounded-lg text-xl border-solid border-2 border-white flex flex-col items-center gap-4 min-w-[300px] w-[60%] m-auto mt-6 text-white">
@@ -247,11 +252,12 @@ export const InfraProviderPricing = () => {
       <h2 className="text-white text-3xl font-bold text-center">
         Solana RPC Infrastructure Pricing
       </h2>
-      <div className="flex flex-row flex-wrap gap-4 mt-4 justify-center">
+      <div className="flex flex-row flex-wrap gap-4 mt-4 justify-center items-center">
         {balance === 0 && wallet.publicKey && (
           <button
             className="btn mt-6 mb-6 btn-primary"
             onClick={async () => {
+              setAirdropLoading(true);
               const ret = await fetch(
                 `https://trpc-ioqkl6ubja-uk.a.run.app/airdrop/${splToken?.value!}/${wallet.publicKey?.toString()!}`,
                 {
@@ -264,8 +270,10 @@ export const InfraProviderPricing = () => {
                 }
               );
               await ret.json();
-              await new Promise((res) => setTimeout(res, 5000));
+              await new Promise((res) => setTimeout(res, 3000));
+
               refetch();
+              setAirdropLoading(false);
             }}
           >
             Airdrop ${splToken?.label}{" "}
@@ -312,12 +320,7 @@ export const InfraProviderPricing = () => {
                 planCreatorAddress={planCreatorAddress}
                 wallet={wallet}
                 disabled={!wallet.connected}
-                onCreate={async () => {
-                  setLoading(true);
-                  await new Promise((res) => setTimeout(res, 4000));
-                  refetchSubscriptions();
-                  setLoading(false);
-                }}
+                onCreate={async () => {}}
               />
             </div>
           );
