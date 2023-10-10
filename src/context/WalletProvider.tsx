@@ -1,15 +1,11 @@
-import React, { FC, PropsWithChildren, useMemo } from "react";
+import { FC, PropsWithChildren, useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
-import {
-  WalletModalProvider,
-  WalletDisconnectButton,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 
 // Default styles that can be overridden by your app

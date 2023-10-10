@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "solsubs-dev"
+  },
+  "targets": {
+    "solsubs-dev": {
+      "hosting": {
+        "demo": [
+          "fir-demo-solsubs"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
